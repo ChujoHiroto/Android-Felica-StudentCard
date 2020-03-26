@@ -117,10 +117,10 @@ class NfcReader {
      */
     @Throws(Exception::class)
 
-    private fun parse(res: ByteArray): ByteArray {
-        if (res[10].toInt() != 0x00)
+    private fun parse(res: ByteArray): ByteArray? {
+        if (res[10].toInt() != 0x00) {
             throw RuntimeException("this code is " + res[10])
-
+        }
         // res[12] 応答ブロック数
         //　13からreturnで返す
         val data: ByteArray = ByteArray(64)

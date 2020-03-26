@@ -7,7 +7,6 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import android.nfc.TagLostException
 import android.nfc.tech.NfcF
 import android.os.Bundle
 import android.util.Log
@@ -52,6 +51,14 @@ class MainActivity : AppCompatActivity() {
             Log.d("Felica","PERMISSION_OPEN")
             // NfcAdapterを取得
             mAdapter = NfcAdapter.getDefaultAdapter(applicationContext)
+
+            if (mAdapter == null){
+                toastMake("NFCリーダーがありません。", 0, 0);
+            } else {
+                if (!mAdapter!!.isEnabled()) {
+                    toastMake("NFCリーダーが有効ではありません。", 0, 0);
+                }
+            }
         }
 
     }
@@ -72,8 +79,14 @@ class MainActivity : AppCompatActivity() {
 
         try {
             NFCans = nfcReader.readTag(tag)!!
-        } catch (e: TagLostException) {
+        } catch (e: Exception) {
+            toastMake("カードが学生証ではありません", 0, 0);
             e.printStackTrace()
+        }
+
+        if (NFCans.size == 256) {
+            toastMake("カードが学生証ではありません", 0, 0);
+            return
         }
 
         var student = ""
@@ -96,11 +109,17 @@ class MainActivity : AppCompatActivity() {
         return output.toString()
     }
 
+    private var t: Toast? = null
+
     private fun toastMake(message: String, x: Int, y: Int) {
-        val toast = Toast.makeText(this, message, Toast.LENGTH_LONG)
-        // 位置調整
-        toast.setGravity(Gravity.CENTER, x, y)
-        toast.show()
+        if (t == null) {
+            t = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
+            t!!.setGravity(Gravity.CENTER, x, y)
+        } else {
+            t!!.setText(message)
+            t!!.setGravity(Gravity.CENTER, x, y)
+        }
+        t?.show()
     }
 
     override fun onPause() {
