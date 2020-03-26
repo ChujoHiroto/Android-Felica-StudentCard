@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FelicaApplication</string>
+    <string name="nfc">学生証をNFCリーダーにかざしてください</string>
 </resources>

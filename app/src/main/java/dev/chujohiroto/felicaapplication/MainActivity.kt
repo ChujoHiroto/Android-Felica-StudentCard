@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         // IntentにTagの基本データが入ってくるので取得。
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG) ?: return
         Log.d("Felica","Read")
-        var NFCans: ByteArray = kotlin.ByteArray(256)
+        var NFCans = ByteArray(256)
 
         try {
             NFCans = nfcReader.readTag(tag)!!
@@ -76,18 +76,16 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
 
-        var studentnumber:String = ""
+        var student = ""
         //データをとりあえず吐かせる
         for (a in 5..10) {
-            Log.d("tagtag: " + a,hexToAscii( Integer.toHexString(NFCans[a].toInt())))
-
-            studentnumber = studentnumber + hexToAscii( Integer.toHexString(NFCans[a].toInt()));
+            student += hexToAscii(Integer.toHexString(NFCans[a].toInt()))
         }
 
-        toastMake(studentnumber,0,0);
+        toastMake(student,0,0);
     }
 
-    private fun hexToAscii(hexStr: String): String? {
+    private fun hexToAscii(hexStr: String): String {
         val output = StringBuilder("")
         var i = 0
         while (i < hexStr.length) {
